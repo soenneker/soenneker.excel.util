@@ -1,13 +1,13 @@
 ﻿using Soenneker.Excel.Util.Abstract;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using ClosedXML.Excel;
 using Microsoft.Extensions.Logging;
 using Soenneker.Excel.Util.Attributes;
 using Soenneker.Extensions.String;
+using Soenneker.Extensions.Type;
 
 namespace Soenneker.Excel.Util;
 
@@ -49,7 +49,7 @@ public class ExcelUtil : IExcelUtil
 
                     if (!cellValue.IsNullOrWhiteSpace())
                     {
-                        object? converted = ConvertPropertyValue(property.PropertyType, cellValue);
+                        object? converted = property.PropertyType.ConvertPropertyValue(cellValue);
                         if (converted != null)
                             property.SetValue(obj, converted);
                     }
@@ -99,41 +99,5 @@ public class ExcelUtil : IExcelUtil
     private static PropertyInfo[] GetCachedProperties(Type type)
     {
         return type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-    }
-
-    private static object? ConvertPropertyValue(Type targetType, string value)
-    {
-        if (targetType == typeof(string))
-            return value;
-
-        if (Nullable.GetUnderlyingType(targetType) is Type underlying)
-        {
-            if (value.IsNullOrWhiteSpace())
-                return null;
-
-            targetType = underlying;
-        }
-
-        return targetType switch
-        {
-            Type t when t == typeof(int) && int.TryParse(value, out int i) => i,
-            Type t when t == typeof(long) && long.TryParse(value, out long l) => l,
-            Type t when t == typeof(short) && short.TryParse(value, out short s) => s,
-            Type t when t == typeof(ushort) && ushort.TryParse(value, out ushort us) => us,
-            Type t when t == typeof(uint) && uint.TryParse(value, out uint ui) => ui,
-            Type t when t == typeof(ulong) && ulong.TryParse(value, out ulong ul) => ul,
-            Type t when t == typeof(byte) && byte.TryParse(value, out byte b) => b,
-            Type t when t == typeof(sbyte) && sbyte.TryParse(value, out sbyte sb) => sb,
-            Type t when t == typeof(float) && float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out float f) => f,
-            Type t when t == typeof(double) && double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double d) => d,
-            Type t when t == typeof(decimal) && decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal dec) => dec,
-            Type t when t == typeof(bool) && bool.TryParse(value, out bool bo) => bo,
-            Type t when t == typeof(DateTime) && DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt) => dt,
-            Type t when t == typeof(TimeSpan) && TimeSpan.TryParse(value, CultureInfo.InvariantCulture, out TimeSpan ts) => ts,
-            Type t when t == typeof(Guid) && Guid.TryParse(value, out Guid g) => g,
-            Type t when t == typeof(Uri) && Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out Uri? uri) => uri,
-            Type t when t.IsEnum && Enum.TryParse(t, value, ignoreCase: true, out object? e) => e,
-            _ => null
-        };
     }
 }
