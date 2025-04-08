@@ -43,7 +43,7 @@
 
     <ItemGroup>
         <PackageReference Include="ClosedXML" Version="0.104.2" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
         <PackageReference Include="Soenneker.Extensions.String" Version="3.0.483" />
         <PackageReference Include="Soenneker.Extensions.Type" Version="3.0.577" />
