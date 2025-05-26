@@ -2,7 +2,7 @@
 using Soenneker.Tests.FixturedUnit;
 using System.Collections.Generic;
 using System.IO;
-using FluentAssertions;
+using AwesomeAssertions;
 using Soenneker.Excel.Util.Tests.Dtos;
 using Xunit;
 
