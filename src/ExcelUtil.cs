@@ -12,7 +12,7 @@ using Soenneker.Extensions.Type;
 namespace Soenneker.Excel.Util;
 
 /// <inheritdoc cref="IExcelUtil"/>
-public class ExcelUtil : IExcelUtil
+public sealed class ExcelUtil : IExcelUtil
 {
     private readonly ILogger<ExcelUtil> _logger;
 
