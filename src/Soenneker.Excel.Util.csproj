@@ -46,6 +46,6 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
         <PackageReference Include="Soenneker.Extensions.String" Version="3.0.538" />
-        <PackageReference Include="Soenneker.Extensions.Type" Version="3.0.615" />
+        <PackageReference Include="Soenneker.Extensions.Type" Version="3.0.616" />
     </ItemGroup>
 </Project>
