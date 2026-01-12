@@ -1,7 +1,7 @@
 ﻿using Soenneker.Excel.Util.Abstract;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using ClosedXML.Excel;
 using Microsoft.Extensions.Logging;
@@ -15,6 +15,8 @@ namespace Soenneker.Excel.Util;
 public sealed class ExcelUtil : IExcelUtil
 {
     private readonly ILogger<ExcelUtil> _logger;
+
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
     public ExcelUtil(ILogger<ExcelUtil> logger)
     {
@@ -31,18 +33,35 @@ public sealed class ExcelUtil : IExcelUtil
         using var workbook = new XLWorkbook(filePath);
         IXLWorksheet? worksheet = workbook.Worksheet(sheetName);
         IXLRow? headerRow = worksheet.FirstRowUsed();
-        List<string> headers = headerRow.Cells().Select(c => c.GetValue<string>()).ToList();
 
-        foreach (IXLRow? dataRow in worksheet.RowsUsed().Skip(1))
+        var headers = new List<string>();
+        foreach (IXLCell cell in headerRow.Cells())
+            headers.Add(cell.GetValue<string>());
+
+        // Build header -> index map once (IndexOf inside the per-property loop is O(n*m)).
+        var headerIndex = new Dictionary<string, int>(headers.Count, StringComparer.Ordinal);
+        for (var i = 0; i < headers.Count; i++)
         {
+            string h = headers[i];
+            if (!headerIndex.ContainsKey(h))
+                headerIndex.Add(h, i);
+        }
+
+        var skippedHeader = false;
+        foreach (IXLRow? dataRow in worksheet.RowsUsed())
+        {
+            if (!skippedHeader)
+            {
+                skippedHeader = true;
+                continue;
+            }
+
             var obj = new T();
 
             foreach (PropertyInfo property in properties)
             {
                 string headerName = property.GetCustomAttribute<ExcelColumnAttribute>()?.Name ?? property.Name;
-                int colIndex = headers.IndexOf(headerName);
-
-                if (colIndex >= 0)
+                if (headerIndex.TryGetValue(headerName, out int colIndex))
                 {
                     IXLCell? cell = dataRow.Cell(colIndex + 1);
                     var cellValue = cell.GetValue<string>();
@@ -98,6 +117,6 @@ public sealed class ExcelUtil : IExcelUtil
 
     private static PropertyInfo[] GetCachedProperties(Type type)
     {
-        return type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        return _propertyCache.GetOrAdd(type, static t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
     }
 }
