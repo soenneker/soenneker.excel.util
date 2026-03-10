@@ -43,6 +43,6 @@
     <ItemGroup>
         <PackageReference Include="ClosedXML" Version="0.105.0" />
         <PackageReference Include="Soenneker.Extensions.String" Version="4.0.627" />
-        <PackageReference Include="Soenneker.Extensions.Type" Version="4.0.670" />
+        <PackageReference Include="Soenneker.Extensions.Type" Version="4.0.671" />
     </ItemGroup>
 </Project>
