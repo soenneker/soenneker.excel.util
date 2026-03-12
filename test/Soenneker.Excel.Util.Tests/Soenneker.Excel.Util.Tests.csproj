@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Excel.Util.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Excel.Util\Soenneker.Excel.Util.csproj" />
     </ItemGroup>
 
     <ItemGroup>
