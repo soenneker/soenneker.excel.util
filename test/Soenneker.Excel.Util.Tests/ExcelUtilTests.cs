@@ -1,30 +1,29 @@
-﻿using Soenneker.Excel.Util.Abstract;
-using Soenneker.Tests.FixturedUnit;
+using Soenneker.Excel.Util.Abstract;
+using Soenneker.Tests.HostedUnit;
 using System.Collections.Generic;
 using System.IO;
 using AwesomeAssertions;
 using Soenneker.Excel.Util.Tests.Dtos;
-using Xunit;
 
 namespace Soenneker.Excel.Util.Tests;
 
-[Collection("Collection")]
-public class ExcelUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class ExcelUtilTests : HostedUnitTest
 {
     private readonly IExcelUtil _excelUtil;
 
-    public ExcelUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public ExcelUtilTests(Host host) : base(host)
     {
         _excelUtil = Resolve<IExcelUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
     }
 
-    [Fact]
+    [Test]
     public void Write_And_Read_ShouldPreserveData()
     {
         // Arrange
