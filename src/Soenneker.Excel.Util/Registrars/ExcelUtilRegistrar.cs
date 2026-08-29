@@ -12,6 +12,8 @@ public static class ExcelUtilRegistrar
     /// <summary>
     /// Adds <see cref="IExcelUtil"/> as a singleton service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddExcelUtilAsSingleton(this IServiceCollection services)
     {
         services.TryAddSingleton<IExcelUtil, ExcelUtil>();
@@ -22,6 +24,8 @@ public static class ExcelUtilRegistrar
     /// <summary>
     /// Adds <see cref="IExcelUtil"/> as a scoped service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddExcelUtilAsScoped(this IServiceCollection services)
     {
         services.TryAddScoped<IExcelUtil, ExcelUtil>();
