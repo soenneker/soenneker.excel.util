@@ -5,7 +5,7 @@ using Soenneker.Excel.Util.Abstract;
 namespace Soenneker.Excel.Util.Registrars;
 
 /// <summary>
-/// Provides methods for reading and writing Excel files using strongly-typed objects with automatic property mapping and basic type conversion
+/// Provides dependency-injection registrations for <see cref="IExcelUtil"/>.
 /// </summary>
 public static class ExcelUtilRegistrar
 {

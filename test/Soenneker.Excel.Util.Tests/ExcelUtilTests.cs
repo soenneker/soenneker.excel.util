@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using AwesomeAssertions;
 using Soenneker.Excel.Util.Tests.Dtos;
+using ClosedXML.Excel;
 
 namespace Soenneker.Excel.Util.Tests;
 
@@ -50,6 +51,30 @@ public class ExcelUtilTests : HostedUnitTest
             readBack[1].Name.Should().Be("Bob");
             readBack[1].Age.Should().Be(25);
             readBack[1].Email.Should().Be("bob@example.com");
+        }
+        finally
+        {
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+        }
+    }
+
+    [Test]
+    public void Read_EmptyWorksheet_ReturnsEmptyList()
+    {
+        string filePath = Path.Combine(Path.GetTempPath(), $"test_{Path.GetRandomFileName()}.xlsx");
+
+        try
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                workbook.Worksheets.Add("Sheet1");
+                workbook.SaveAs(filePath);
+            }
+
+            List<Person> readBack = _excelUtil.Read<Person>(filePath);
+
+            readBack.Should().BeEmpty();
         }
         finally
         {

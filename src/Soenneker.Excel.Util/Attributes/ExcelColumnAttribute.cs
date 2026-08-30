@@ -3,13 +3,13 @@
 namespace Soenneker.Excel.Util.Attributes;
 
 /// <summary>
-/// Represents the excel column attribute.
+/// Overrides the worksheet header used for a mapped property.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class ExcelColumnAttribute(string name) : Attribute
 {
     /// <summary>
-    /// Gets name.
+    /// Gets the exact worksheet header name.
     /// </summary>
     public string Name { get; } = name;
 }

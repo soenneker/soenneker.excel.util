@@ -11,7 +11,6 @@ using Soenneker.Extensions.Type;
 
 namespace Soenneker.Excel.Util;
 
-/// <inheritdoc cref="IExcelUtil"/>
 public sealed class ExcelUtil : IExcelUtil
 {
     private readonly ILogger<ExcelUtil> _logger;
@@ -31,8 +30,14 @@ public sealed class ExcelUtil : IExcelUtil
         PropertyInfo[] properties = GetCachedProperties(typeof(T));
 
         using var workbook = new XLWorkbook(filePath);
-        IXLWorksheet? worksheet = workbook.Worksheet(sheetName);
+        IXLWorksheet worksheet = workbook.Worksheet(sheetName);
         IXLRow? headerRow = worksheet.FirstRowUsed();
+
+        if (headerRow is null)
+        {
+            _logger.LogDebug("%% EXCELUTIL: -- Worksheet is empty");
+            return result;
+        }
 
         var headers = new List<string>();
         foreach (IXLCell cell in headerRow.Cells())
@@ -117,6 +122,7 @@ public sealed class ExcelUtil : IExcelUtil
 
     private static PropertyInfo[] GetCachedProperties(Type type)
     {
-        return _propertyCache.GetOrAdd(type, static t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
+        return _propertyCache.GetOrAdd(type, static t => Array.FindAll(t.GetProperties(BindingFlags.Public | BindingFlags.Instance), static property =>
+            property.GetMethod?.IsPublic == true && property.SetMethod?.IsPublic == true && property.GetIndexParameters().Length == 0));
     }
 }
