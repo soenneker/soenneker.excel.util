@@ -49,8 +49,7 @@ public sealed class ExcelUtil : IExcelUtil
         for (var i = 0; i < headers.Count; i++)
         {
             string h = headers[i];
-            if (!headerIndex.ContainsKey(h))
-                headerIndex.Add(h, i);
+            headerIndex.TryAdd(h, i);
         }
 
         var skippedHeader = false;
