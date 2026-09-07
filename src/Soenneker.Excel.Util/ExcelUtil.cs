@@ -52,6 +52,7 @@ public sealed class ExcelUtil : IExcelUtil
             headerIndex.TryAdd(h, i);
         }
 
+        int[]? columnIndexes = null;
         var skippedHeader = false;
         foreach (IXLRow? dataRow in worksheet.RowsUsed())
         {
@@ -63,12 +64,24 @@ public sealed class ExcelUtil : IExcelUtil
 
             var obj = new T();
 
-            foreach (PropertyInfo property in properties)
+            if (columnIndexes is null)
             {
-                string headerName = property.GetCustomAttribute<ExcelColumnAttribute>()?.Name ?? property.Name;
-                if (headerIndex.TryGetValue(headerName, out int colIndex))
+                columnIndexes = new int[properties.Length];
+                for (var i = 0; i < properties.Length; i++)
                 {
-                    IXLCell? cell = dataRow.Cell(colIndex + 1);
+                    string headerName = properties[i].GetCustomAttribute<ExcelColumnAttribute>()?.Name ?? properties[i].Name;
+                    if (headerIndex.TryGetValue(headerName, out int index))
+                        columnIndexes[i] = index + 1;
+                }
+            }
+
+            for (var i = 0; i < properties.Length; i++)
+            {
+                int columnIndex = columnIndexes[i];
+                if (columnIndex != 0)
+                {
+                    PropertyInfo property = properties[i];
+                    IXLCell? cell = dataRow.Cell(columnIndex);
                     var cellValue = cell.GetValue<string>();
 
                     if (!cellValue.IsNullOrWhiteSpace())
