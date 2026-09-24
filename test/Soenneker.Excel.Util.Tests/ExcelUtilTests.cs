@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using Soenneker.Utils.File.Abstract;
 using Soenneker.Excel.Util.Abstract;
 using Soenneker.Tests.HostedUnit;
 using System.Collections.Generic;
@@ -11,10 +13,13 @@ namespace Soenneker.Excel.Util.Tests;
 [ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
 public class ExcelUtilTests : HostedUnitTest
 {
+    private readonly IFileUtil _fileUtil;
+
     private readonly IExcelUtil _excelUtil;
 
     public ExcelUtilTests(Host host) : base(host)
     {
+        _fileUtil = Resolve<IFileUtil>(true);
         _excelUtil = Resolve<IExcelUtil>(true);
     }
 
@@ -25,7 +30,7 @@ public class ExcelUtilTests : HostedUnitTest
     }
 
     [Test]
-    public void Write_And_Read_ShouldPreserveData()
+    public async Task Write_And_Read_ShouldPreserveData()
     {
         // Arrange
         var people = new List<Person>
@@ -54,13 +59,13 @@ public class ExcelUtilTests : HostedUnitTest
         }
         finally
         {
-            if (File.Exists(filePath))
-                File.Delete(filePath);
+            if ((await _fileUtil.Exists(filePath)))
+                await _fileUtil.Delete(filePath);
         }
     }
 
     [Test]
-    public void Read_EmptyWorksheet_ReturnsEmptyList()
+    public async Task Read_EmptyWorksheet_ReturnsEmptyList()
     {
         string filePath = Path.Combine(Path.GetTempPath(), $"test_{Path.GetRandomFileName()}.xlsx");
 
@@ -78,8 +83,8 @@ public class ExcelUtilTests : HostedUnitTest
         }
         finally
         {
-            if (File.Exists(filePath))
-                File.Delete(filePath);
+            if ((await _fileUtil.Exists(filePath)))
+                await _fileUtil.Delete(filePath);
         }
     }
 }
