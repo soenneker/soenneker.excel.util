@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
 
 namespace Soenneker.Excel.Util.Abstract;
 
@@ -14,7 +15,8 @@ public interface IExcelUtil
     /// <param name="filePath">The full path to the Excel file to read.</param>
     /// <param name="sheetName">The exact name of the worksheet to read. Defaults to <c>Sheet1</c>.</param>
     /// <returns>Objects populated from the worksheet rows after the header row, or an empty list when the worksheet is empty.</returns>
-    List<T> Read<T>(string filePath, string sheetName = "Sheet1") where T : new();
+    [RequiresDynamicCode("Reading arbitrary collection properties can require runtime generic instantiations.")]
+    List<T> Read<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string filePath, string sheetName = "Sheet1") where T : new();
 
     /// <summary>
     /// Writes a list of objects to an Excel worksheet.
@@ -23,5 +25,5 @@ public interface IExcelUtil
     /// <param name="objects">The list of objects to write.</param>
     /// <param name="filePath">The full path to the Excel file to create or overwrite.</param>
     /// <param name="sheetName">The name of the worksheet to create. Defaults to <c>Sheet1</c>.</param>
-    void Write<T>(List<T> objects, string filePath, string sheetName = "Sheet1");
+    void Write<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(List<T> objects, string filePath, string sheetName = "Sheet1");
 }

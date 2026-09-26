@@ -1,4 +1,5 @@
-﻿using Soenneker.Excel.Util.Abstract;
+using System.Diagnostics.CodeAnalysis;
+using Soenneker.Excel.Util.Abstract;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ public sealed class ExcelUtil : IExcelUtil
         _logger = logger;
     }
 
-    public List<T> Read<T>(string filePath, string sheetName = "Sheet1") where T : new()
+    [RequiresDynamicCode("Reading arbitrary collection properties can require runtime generic instantiations.")]
+    public List<T> Read<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string filePath, string sheetName = "Sheet1") where T : new()
     {
         _logger.LogDebug("%% EXCELUTIL: -- Reading Excel from {path} ...", filePath);
 
@@ -101,7 +103,7 @@ public sealed class ExcelUtil : IExcelUtil
         return result;
     }
 
-    public void Write<T>(List<T> objects, string filePath, string sheetName = "Sheet1")
+    public void Write<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(List<T> objects, string filePath, string sheetName = "Sheet1")
     {
         _logger.LogDebug("%% EXCELUTIL: -- Writing Excel to {path} ...", filePath);
 
@@ -133,9 +135,9 @@ public sealed class ExcelUtil : IExcelUtil
         _logger.LogDebug("%% EXCELUTIL: -- Finished writing Excel");
     }
 
-    private static PropertyInfo[] GetCachedProperties(Type type)
+    private static PropertyInfo[] GetCachedProperties([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
     {
-        return _propertyCache.GetOrAdd(type, static t => Array.FindAll(t.GetProperties(BindingFlags.Public | BindingFlags.Instance), static property =>
+        return _propertyCache.GetOrAdd(type, _ => Array.FindAll(type.GetProperties(BindingFlags.Public | BindingFlags.Instance), static property =>
             property.GetMethod?.IsPublic == true && property.SetMethod?.IsPublic == true && property.GetIndexParameters().Length == 0));
     }
 }
