@@ -30,7 +30,7 @@ public class ExcelUtilTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Write_And_Read_ShouldPreserveData()
+    public async ValueTask Write_And_Read_ShouldPreserveData()
     {
         // Arrange
         var people = new List<Person>
@@ -65,7 +65,7 @@ public class ExcelUtilTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Read_EmptyWorksheet_ReturnsEmptyList()
+    public async ValueTask Read_EmptyWorksheet_ReturnsEmptyList()
     {
         string filePath = Path.Combine(Path.GetTempPath(), $"test_{Path.GetRandomFileName()}.xlsx");
 
