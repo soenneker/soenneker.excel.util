@@ -7,6 +7,7 @@ using System.IO;
 using AwesomeAssertions;
 using Soenneker.Excel.Util.Tests.Dtos;
 using ClosedXML.Excel;
+using System.Threading;
 
 namespace Soenneker.Excel.Util.Tests;
 
@@ -30,7 +31,7 @@ public class ExcelUtilTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Write_And_Read_ShouldPreserveData()
+    public async ValueTask Write_And_Read_ShouldPreserveData(CancellationToken cancellationToken)
     {
         // Arrange
         var people = new List<Person>
@@ -65,7 +66,7 @@ public class ExcelUtilTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Read_EmptyWorksheet_ReturnsEmptyList()
+    public async ValueTask Read_EmptyWorksheet_ReturnsEmptyList(CancellationToken cancellationToken)
     {
         string filePath = Path.Combine(Path.GetTempPath(), $"test_{Path.GetRandomFileName()}.xlsx");
 
