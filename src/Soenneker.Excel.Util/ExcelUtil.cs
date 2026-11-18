@@ -27,7 +27,8 @@ public sealed class ExcelUtil : IExcelUtil
     [RequiresDynamicCode("Reading arbitrary collection properties can require runtime generic instantiations.")]
     public List<T> Read<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string filePath, string sheetName = "Sheet1") where T : new()
     {
-        _logger.LogDebug("%% EXCELUTIL: -- Reading Excel from {path} ...", filePath);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("%% EXCELUTIL: -- Reading Excel from {path} ...", filePath);
 
         var result = new List<T>();
         PropertyInfo[] properties = GetCachedProperties(typeof(T));
@@ -105,7 +106,8 @@ public sealed class ExcelUtil : IExcelUtil
 
     public void Write<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(List<T> objects, string filePath, string sheetName = "Sheet1")
     {
-        _logger.LogDebug("%% EXCELUTIL: -- Writing Excel to {path} ...", filePath);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("%% EXCELUTIL: -- Writing Excel to {path} ...", filePath);
 
         PropertyInfo[] properties = GetCachedProperties(typeof(T));
 
