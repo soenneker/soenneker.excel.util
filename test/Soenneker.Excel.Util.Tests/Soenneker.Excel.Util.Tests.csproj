@@ -30,7 +30,7 @@
         <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
     </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Soenneker.Utils.File" Version="11.0.2347" />
+    <PackageReference Include="Soenneker.Utils.File" Version="11.0.2348" />
   </ItemGroup>
 </Project>
 
